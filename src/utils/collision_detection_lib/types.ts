@@ -1,3 +1,5 @@
+// Author: Ubayd Sharif
+
 export type Shape = Circle | Line | Box;
 
 export type Vec2 = {

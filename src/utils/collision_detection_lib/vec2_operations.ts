@@ -1,3 +1,5 @@
+// Author: Ubayd Sharif
+
 //Types
 import { Line, Vec2 } from "./types";
 import { Box } from "./types";

@@ -1,3 +1,5 @@
+// Author: Ubayd Sharif
+
 //TODO:
 // 1. Use types for shapes
 // 2. Add params using shape types

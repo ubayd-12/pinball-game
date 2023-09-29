@@ -1,3 +1,5 @@
+// Author: Ubayd Sharif
+
 // Handle all shape interactions
 
 import { Box, Circle, Line, Vec2 } from "./collision_detection_lib/types";

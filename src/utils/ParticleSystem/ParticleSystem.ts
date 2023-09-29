@@ -1,3 +1,6 @@
+// Credit: Prof Guy's Lecture slides
+// Note: Reformated to fit TypeScipt
+
 import * as p5 from "p5";
 import { Particle } from "./Particle";
 
