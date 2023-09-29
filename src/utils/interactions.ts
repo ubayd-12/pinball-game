@@ -4,8 +4,6 @@ import { Box, Circle, Line, Vec2 } from "./collision_detection_lib/types";
 import {
   circleBoxCol,
   circleCircleCol,
-  circleLineCol,
-  lineLineCol,
 } from "./collision_detection_lib/collision_detection";
 import * as p5 from "p5";
 import {
@@ -15,6 +13,7 @@ import {
   scale,
   add,
   dot,
+  closestPointOnLine,
 } from "./collision_detection_lib/vec2_operations";
 
 export const ballBallInteraction = (balls: Circle[]): void => {
@@ -48,7 +47,7 @@ export const ballBallInteraction = (balls: Circle[]): void => {
 
         const m1 = 1; // pinballs have equal mass
         const m2 = 1; // pinballs have equal mass
-        const cor = 0.1;
+        const cor = 1;
 
         const new_v1 = (m1 * v1 + m2 * v2 - m2 * (v1 - v2) * cor) / (m1 + m2);
         const new_v2 = (m1 * v1 + m2 * v2 + m1 * (v1 - v2) * cor) / (m1 + m2);
@@ -180,42 +179,34 @@ export const ballCircleObstacleInteraction = (
 
 export const ballLineObstacleInteraction = (
   balls: Circle[],
-  lineObstacles: Line[],
-  deltaTime: number
+  lineObstacles: Line[]
 ) => {
-  for (const ball of balls) {
-    for (const lineObstacle of lineObstacles) {
-      // Future ball position
-      const futurePosition: Vec2 = {
-        x: ball.center_x + ball.velocity.x * deltaTime,
-        y: ball.center_y + ball.velocity.y * deltaTime,
-      };
+  const damping = 0.8;
 
-      // Predicted line of ball's motion
-      const motionLine: Line = {
-        type: "Line",
-        id: -1,
-        x1: ball.center_x,
-        y1: ball.center_y,
-        x2: futurePosition.x,
-        y2: futurePosition.y,
-      };
+  for (let ball of balls) {
+    for (let line of lineObstacles) {
+      // closest point on line to circle center
+      const closestPoint = closestPointOnLine(line, {
+        x: ball.center_x,
+        y: ball.center_y,
+      });
 
-      // Check for collision between motion line and line obstacle
-      if (lineLineCol(motionLine, lineObstacle)) {
-        const lineVec: Vec2 = {
-          x: lineObstacle.x2 - lineObstacle.x1,
-          y: lineObstacle.y2 - lineObstacle.y1,
-        };
-        const normLineVec: Vec2 = normalize(lineVec); // Normalized vector of the line
-        const norm: Vec2 = { x: -normLineVec.y, y: normLineVec.x }; // Normal to the line vector
+      const collisionVector = subtract(
+        { x: ball.center_x, y: ball.center_y },
+        closestPoint
+      );
 
-        const dotProduct = dot(ball.velocity, norm);
-        const reflectedVelocity: Vec2 = subtract(
+      // distance is less than the circle radius
+      if (magnitude(collisionVector) < ball.radius) {
+        const normal = normalize(collisionVector);
+        const reflection = subtract(
           ball.velocity,
-          scale(norm, 2 * dotProduct)
+          scale(normal, 2 * dot(ball.velocity, normal))
         );
-        ball.velocity = reflectedVelocity;
+
+        ball.center_x += reflection.x;
+        ball.center_y += reflection.y;
+        ball.velocity = scale(reflection, damping);
       }
     }
   }

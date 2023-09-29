@@ -19,7 +19,7 @@ import {
   ballCircleObstacleInteraction,
   ballLineObstacleInteraction,
 } from "./utils/interactions";
-import { AUDIO_BASE64, BG_BASE64, TIRE_BASE64 } from "./utils/contants";
+import { AUDIO_BASE64, BG_BASE64, PLANET_BASE64 } from "./utils/contants";
 
 let gravity: Vec2 = { x: 0, y: 0.2 } as Vec2;
 let startTime: number;
@@ -35,10 +35,10 @@ const playAudio = () => {
 export const sketch = (p: p5) => {
   let system: ParticleSystem;
   let bg: p5.Image;
-  let tireImage: p5.Image;
+  let planetImage: p5.Image;
 
   p.preload = () => {
-    tireImage = p.loadImage("data:image/png;base64," + TIRE_BASE64);
+    planetImage = p.loadImage("data:image/png;base64," + PLANET_BASE64);
     bg = p.loadImage("data:image/png;base64," + BG_BASE64);
   };
 
@@ -85,7 +85,7 @@ export const sketch = (p: p5) => {
 
     // Check for ball obstacle collisions (lines)
 
-    ballLineObstacleInteraction(balls, lineObstacles, 1);
+    ballLineObstacleInteraction(balls, lineObstacles);
 
     // check for ball ball collisions
 
@@ -130,7 +130,7 @@ export const sketch = (p: p5) => {
       const y = obstacle.center_y - obstacle.radius;
       const d = obstacle.radius * 2;
 
-      p.image(tireImage, x, y, d, d);
+      p.image(planetImage, x, y, d, d);
     }
 
     for (let obstacle of lineObstacles) {

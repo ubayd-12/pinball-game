@@ -97,32 +97,3 @@ export const onSegment = (p: Vec2, q: Vec2, r: Vec2): boolean => {
     return true;
   return false;
 };
-
-export const circleLineColWithCCD = (
-  start: Vec2,
-  end: Vec2,
-  radius: number,
-  line: Line
-): boolean => {
-  const lineVector = subtract(
-    { x: line.x2, y: line.y2 },
-    { x: line.x1, y: line.y1 }
-  );
-  const lineLength = magnitude(lineVector);
-  const circleTravel = subtract(end, start);
-
-  // Iterate over the circle's path
-  // The step size and count here need to be adjusted based on your frame rate, speed of objects, etc.
-  // More steps will give more accurate results but will be computationally expensive
-  for (let t = 0; t <= 1; t += 0.01) {
-    const currentPosition = add(start, scale(circleTravel, t));
-
-    // Check if the current circle position intersects with the line
-    const closestPoint = closestPointOnLine(line, currentPosition);
-    if (distance(currentPosition, closestPoint) <= radius) {
-      return true; // Collision detected
-    }
-  }
-
-  return false; // No collision detected in the path
-};

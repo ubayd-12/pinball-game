@@ -1,5 +1,3 @@
-import * as p5 from "p5";
-
 export type Shape = Circle | Line | Box;
 
 export type Vec2 = {
